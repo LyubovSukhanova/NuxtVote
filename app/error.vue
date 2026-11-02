@@ -16,7 +16,7 @@ function goHome() {
         <div v-if="error.status == 404" class="status__text">
             Страница не найдена, вернитесь на главную страницу
         </div>
-        <div v-else class="status__text">{{ error.statusText }}</div>
+        <div v-else class="status__text">{{ error.statusText || error.message || 'Что-то пошло не так' }}</div>
         <ActionButton @click="goHome" class="error__button">На главную</ActionButton>
     </div>
 </template>
