@@ -1,7 +1,9 @@
 <template>
     <div class="layout-container">
         <MenuLayout />
-        <slot />
+        <div class="layout-content">
+            <slot />
+        </div>
     </div>
 
 </template>
@@ -12,5 +14,10 @@
     flex-direction: row;
     width: 100%;
     align-items: flex-start;
+}
+
+.layout-content {
+    display: flex;
+    flex: 1;
 }
 </style>
