@@ -1,3 +1,3 @@
 <template>
-    <div>View post</div>
+    <PostCard />
 </template>
