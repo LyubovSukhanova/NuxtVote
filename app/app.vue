@@ -12,7 +12,7 @@ import "~/assets/styles/main.css"
   </div>
 </template>
 
-<style scoped>
+<style>
 .page-enter-active,
 .page-leave-active {
   transition: all 0.3s;

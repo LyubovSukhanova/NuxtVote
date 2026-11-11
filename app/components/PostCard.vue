@@ -19,7 +19,9 @@ const dislikesNumber = ref<number>(0);
             <span class="post__header__days">{{ daysNumber }} дня назад</span>
         </div>
         <span class="post__name">{{ postName }}</span>
-        <span class="post__content">{{ postContent.slice(0, 200) }}...</span>
+        <span class="post__content">
+            {{ postContent.length > 200 ? postContent.slice(0, 200) + '...' : postContent }}
+        </span>
         <div class="post__likes">
             <span class="post__likes__number">{{ likesNumber }}</span>
             <Icon class="icon" style="margin-right: 13px;" name="icons:fingerup" size="18px" />
