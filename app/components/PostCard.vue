@@ -1,18 +1,22 @@
 <script setup lang="ts">
+import type { Post } from '~/interfaces/post.interface';
+
+const props = withDefaults(
+    defineProps<{ post?: Post | null, full?: boolean }>(),
+    { post: null, full: false }
+)
+
 const companyName = ref<string>("Путешествия")
-const postDate = ref<Date>(new Date(2026, 10, 8));
-const daysNumber = computed(() => {
-    const today = new Date();
-    return Math.floor((today.getTime() - postDate.value.getTime()) / (1000 * 3600 * 24));
-});
-const postName = ref<string>("Добавить функцию голосования");
-const postContent = ref<string>("Попробовать добавить в приложение функцию голосования, которая позволит определить, какая фича более полезна, а какая нет. После добавления поста появляется Попробовать добавить в приложение функцию голосования, которая позволит определить, какая фича более полезна, а какая нет. После добавления поста появляется...")
-const likesNumber = ref<number>(0);
-const dislikesNumber = ref<number>(0);
+const postDate = ref<Date>(new Date(props.post?.published_at ?? Date.now()));
+const daysNumber = useDaysSince(postDate);
+const postName = ref<string>(props.post?.title ?? '');
+const postContent = ref<string>(props.post?.content ?? '');
+const likesNumber = ref<number>(props.post?.likes ?? 0);
+const dislikesNumber = ref<number>(props.post?.dislikes ?? 0);
 </script>
 
 <template>
-    <div class="post__container">
+    <div class="post__container" :style="{ borderTop: full ? 'none' : '1px solid var(--color - light - gray)' }">
         <div class="post__header">
             <IconCompanyLogo :size="24" />
             <span class="post__header__company__name">{{ companyName }}</span>
@@ -20,7 +24,7 @@ const dislikesNumber = ref<number>(0);
         </div>
         <span class="post__name">{{ postName }}</span>
         <span class="post__content">
-            {{ postContent.length > 200 ? postContent.slice(0, 200) + '...' : postContent }}
+            {{ postContent.length > 200 && !full ? postContent.slice(0, 200) + '...' : postContent }}
         </span>
         <div class="post__likes">
             <span class="post__likes__number">{{ likesNumber }}</span>
@@ -41,8 +45,10 @@ const dislikesNumber = ref<number>(0);
     display: flex;
     flex-direction: column;
     width: 692px;
-    height: 203px;
-    border-bottom: 1px solid var(--color-light-gray);
+    min-height: 203px;
+    border-top: 1px solid var(--color-light-gray);
+    padding-top: 38px;
+    padding-bottom: 34px;
 }
 
 .post__header {
