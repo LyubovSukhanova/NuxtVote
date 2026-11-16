@@ -17,7 +17,6 @@ const pageNumber = ref(1);
 
 
 const { data } = await useFetch<GetPostsResponse>(API_URL + '/posts', { query: { sort: selectDateRating, page: pageNumber, page_size: 5 } })
-console.log('data', data.value)
 
 const postsData = computed(() => {
     return data.value?.posts;
