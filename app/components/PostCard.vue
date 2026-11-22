@@ -1,18 +1,35 @@
 <script setup lang="ts">
 import type { Post } from '~/interfaces/post.interface';
 
+const likesStore = useLikesStore();
+
 const props = withDefaults(
     defineProps<{ post?: Post | null, full?: boolean }>(),
     { post: null, full: false }
 )
 
+const action = computed(() => likesStore.getAction(props.post?.id));
+
 const companyName = ref<string>("Путешествия")
 const postDate = ref<Date>(new Date(props.post?.published_at ?? Date.now()));
+const postId = props.post?.id;
 const daysNumber = useDaysSince(postDate);
 const postName = ref<string>(props.post?.title ?? '');
 const postContent = ref<string>(props.post?.content ?? '');
-const likesNumber = ref<number>(props.post?.likes ?? 0);
-const dislikesNumber = ref<number>(props.post?.dislikes ?? 0);
+const likesNumber = computed(() => props.post?.likes ?? 0);
+const dislikesNumber = computed(() => props.post?.dislikes ?? 0);
+
+const isLiked = computed(() => action.value === "liked");
+const isDisliked = computed(() => action.value === "disliked");
+
+
+async function onLikePost() {
+    await likesStore.likePost(postId);
+}
+
+async function onDislikePost() {
+    await likesStore.dislikePost(postId);
+}
 </script>
 
 <template>
@@ -28,9 +45,9 @@ const dislikesNumber = ref<number>(props.post?.dislikes ?? 0);
         </span>
         <div class="post__likes">
             <span class="post__likes__number">{{ likesNumber }}</span>
-            <Icon class="icon" style="margin-right: 13px;" name="icons:fingerup" size="18px" />
+            <Icon class="icon" :class="{ active: isLiked }" name="icons:fingerup" @click="onLikePost" />
             <span class="post__likes__number">{{ dislikesNumber }}</span>
-            <Icon class="icon" name="icons:fingerdown" size="18px" />
+            <Icon class="icon" :class="{ active: isDisliked }" name="icons:fingerdown" @click="onDislikePost" />
             <div class="right__string">
                 <Icon class="icon" style="margin-right: 20px;" name="icons:blog" size="17px" />
                 <Icon class="icon" name="icons:pencil" size="14px" />
@@ -114,5 +131,10 @@ const dislikesNumber = ref<number>(props.post?.dislikes ?? 0);
 
 .icon {
     cursor: pointer;
+}
+
+.icon.active {
+    color: var(--color-accent);
+    /* или любой акцентный цвет */
 }
 </style>
