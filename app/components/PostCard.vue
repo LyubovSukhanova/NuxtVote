@@ -20,6 +20,13 @@ const postContent = ref<string>(props.post?.content ?? '');
 const likesNumber = computed(() => props.post?.likes ?? 0);
 const dislikesNumber = computed(() => props.post?.dislikes ?? 0);
 
+const reaction = computed(() => {
+    if (!postId) return;
+    return likesStore.likeAction(postId);
+});
+const isLiked = computed(() => reaction.value === 'liked');
+const isDisliked = computed(() => reaction.value === 'disliked');
+
 async function onLikePost() {
     if (!postId) return;
     if (likesStore.likeExists(postId)) {
@@ -156,6 +163,5 @@ async function onDislikePost() {
 
 .icon.active {
     color: var(--color-accent);
-    /* или любой акцентный цвет */
 }
 </style>

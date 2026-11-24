@@ -27,7 +27,12 @@ export const useLikesStore = defineStore(
             }
         }
 
-        return { likesAndDislikes, likePost, dislikePost, likeExists };
+        function likeAction(id: Number) {
+            const like = likesAndDislikes.value?.find((l) => l.id === id);
+            return like?.action;
+        }
+
+        return { likesAndDislikes, likePost, dislikePost, likeExists, likeAction };
     },
     { persist: true },
 );
