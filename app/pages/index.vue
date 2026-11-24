@@ -4,7 +4,15 @@ import type { GetPostsResponse, Post } from '~/interfaces/post.interface';
 const config = useRuntimeConfig();
 const API_URL = config.public.apiurl;
 
-const selectDateRating = ref('date');
+const route = useRoute();
+const router = useRouter();
+
+const selectDateRating = computed(() => {
+    return route.query.sort === 'rating' ? 'rating' : 'date';
+});
+const pageNumber = computed(() => {
+    return Number(route.query.page) || 1;
+});
 
 const { data: allPosts } = await useFetch<GetPostsResponse>(API_URL + '/posts', { query: { page_size: 5 } });
 const totalPagesNumber = computed(() => {
@@ -13,8 +21,6 @@ const totalPagesNumber = computed(() => {
 const pages = computed(() => {
     return Array.from({ length: totalPagesNumber.value ?? 0 }, (_, i) => i + 1)
 });
-const pageNumber = ref(1);
-
 
 const { data } = await useFetch<GetPostsResponse>(API_URL + '/posts', { query: { sort: selectDateRating, page: pageNumber, page_size: 5 } })
 
@@ -23,15 +29,15 @@ const postsData = computed(() => {
 });
 
 function onSelectDateClick() {
-    selectDateRating.value = 'date';
+    navigateTo({ query: { ...route.query, sort: 'date', page: 1 } })
 };
 
 function onSelectRatingClick() {
-    selectDateRating.value = 'rating';
+    navigateTo({ query: { ...route.query, sort: 'rating', page: 1 } })
 };
 
 function onPageClick(page: number) {
-    pageNumber.value = page;
+    navigateTo({ query: { ...route.query, page: page } })
 };
 
 </script>
