@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import type { Post } from '~/interfaces/post.interface';
 
+const config = useRuntimeConfig();
+const API_URL = config.public.apiurl;
+
 const likesStore = useLikesStore();
 
 const props = withDefaults(
     defineProps<{ post?: Post | null, full?: boolean }>(),
     { post: null, full: false }
 )
-
-const action = computed(() => likesStore.getAction(props.post?.id));
 
 const companyName = ref<string>("Путешествия")
 const postDate = ref<Date>(new Date(props.post?.published_at ?? Date.now()));
@@ -19,16 +20,36 @@ const postContent = ref<string>(props.post?.content ?? '');
 const likesNumber = computed(() => props.post?.likes ?? 0);
 const dislikesNumber = computed(() => props.post?.dislikes ?? 0);
 
-const isLiked = computed(() => action.value === "liked");
-const isDisliked = computed(() => action.value === "disliked");
-
-
 async function onLikePost() {
-    await likesStore.likePost(postId);
+    if (!postId) return;
+    if (likesStore.likeExists(postId)) {
+        return
+    } else {
+        try {
+            await $fetch(API_URL + '/posts/' + postId.toString() + '/like', {
+                method: 'POST'
+            });
+            likesStore.likePost(postId);
+        } catch (e) {
+            console.error("Ошибка лайка поста: ", e)
+        }
+    }
 }
 
 async function onDislikePost() {
-    await likesStore.dislikePost(postId);
+    if (!postId) return;
+    if (likesStore.likeExists(postId)) {
+        return
+    } else {
+        try {
+            await $fetch(API_URL + '/posts/' + postId.toString() + '/dislike', {
+                method: 'POST'
+            });
+            likesStore.dislikePost(postId);
+        } catch (e) {
+            console.error("Ошибка дизлайка поста: ", e)
+        }
+    }
 }
 </script>
 
