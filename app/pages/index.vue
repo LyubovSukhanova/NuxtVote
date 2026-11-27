@@ -1,8 +1,8 @@
 <script setup lang="ts">
+import { useAPI } from '~/composables/useAPI';
 import type { GetPostsResponse, Post } from '~/interfaces/post.interface';
 
-const config = useRuntimeConfig();
-const API_URL = config.public.apiurl;
+const API_URL = useAPI();
 
 const route = useRoute();
 const router = useRouter();
