@@ -9,16 +9,20 @@ const email = ref('');
 const password = ref('')
 
 async function onLogin() {
-    const data = await $fetch<AuthResponse>(API_URL + '/auth/login', {
-        method: 'POST',
-        body: {
-            email: email.value,
-            password: password.value,
-        }
-    });
-    authStore.setToken(data.token);
-    authStore.setUser(data.user);
-    navigateTo('/')
+    try {
+        const data = await $fetch<AuthResponse>(API_URL + '/auth/login', {
+            method: 'POST',
+            body: {
+                email: email.value,
+                password: password.value,
+            }
+        });
+        authStore.setToken(data.token);
+        authStore.setUser(data.user);
+        navigateTo('/')
+    } catch (e) {
+        console.error("Ошибка авторизации: ", e)
+    }
 };
 
 </script>
